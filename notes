@@ -1,0 +1,2 @@
+sudo apt-get install python-bluetooth
+got bluetooth server basic code from blog.kevindoran.co/bluetooth-programming-with-python3
