@@ -6,6 +6,7 @@ server_socket.bind((address, port))
 server_socket.listen(1)
 try:
     client, address = server_socket.accept()
+    print("Connection accepted")
     while True:
         data = client.recv(1024)
         if data:
