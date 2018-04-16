@@ -1,42 +1,60 @@
-import socket 
+'''
+Created on Apr 16, 2018
+
+@author: broihier
+'''
 import bluetooth
 import Lock
-address = 'B8:27:EB:69:B1:42'
-port = 5
-server_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-server_socket.bind(("", bluetooth.PORT_ANY))
-server_socket.listen(1)
-port = server_socket.getsockname()[1]
-uuid = "00000003-0000-1000-8000-00805f9b34fb"
-bluetooth.advertise_service( server_socket, "rfcomm",
-                             service_id = uuid,
-                             service_classes = [ uuid, bluetooth.SERIAL_PORT_CLASS ],
-                             profiles = [ bluetooth.SERIAL_PORT_PROFILE ],)
-while True:
-    try:
-        client, address = server_socket.accept()
-        print("Connection accepted")
-        while True:
-            data = client.recv(1024)
-            if data:
-                print(data)
-                print("Making lock")
-                lock = Lock.Lock(data)
-                print("Checking lock")
-                if lock.isLocked():
-                    print("Data is not of the expected pattern")
-                    client.send("Authentication Error")
-                else:
-                    print("Data pattern is acceptable")
-                    client.send("Command accepted")
-                #client.send(data)
-    except KeyboardInterrupt:
-        print("Closing socket and exiting")
-        client.close()
-        break 
-    except Exception as Err :
-        print(Err)
-        print("Closing socket")
-        client.close()
 
-server_socket.close()
+class BluetoothServer(object):
+    '''
+    Bluetooth server class
+    '''
+    def __init__(self):
+        self.server_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+        self.server_socket.bind(("", bluetooth.PORT_ANY))
+        self.server_socket.listen(1)
+        uuid = "00000003-0000-1000-8000-00805f9b34fb"
+        bluetooth.advertise_service(self.server_socket, "rfcomm",
+                                    service_id=uuid,
+                                    service_classes=[uuid, bluetooth.SERIAL_PORT_CLASS],
+                                    profiles=[bluetooth.SERIAL_PORT_PROFILE], )
+    def run_server(self):
+        '''
+        Run Server method - this starts the server
+        '''
+        print("bluetooth RFCOMM server is listening")
+        while True:
+            client = None
+            try:
+                client, = self.server_socket.accept()
+                print("Connection accepted")
+                while True:
+                    data = client.recv(1024)
+                    if data:
+                        print(data)
+                        print("Making lock")
+                        lock = Lock.Lock(data)
+                        print("Checking lock")
+                        if lock.is_locked():
+                            print("Data is not of the expected pattern")
+                            client.send("Authentication Failed")
+                        else:
+                            print("Data pattern is acceptable")
+                            client.send("Command Successful")
+
+            except KeyboardInterrupt:
+                print("Closing socket and exiting")
+                if client:
+                    client.close()
+                break
+            except Exception as err:
+                print(err)
+                print("Closing socket")
+                client.close()
+
+        self.server_socket.close()
+
+if __name__ == "__main__":
+    SERVER = BluetoothServer()
+    SERVER.run_server()
