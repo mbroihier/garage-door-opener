@@ -27,12 +27,11 @@ class BluetoothServer(object):
         while True:
             client = None
             try:
-                client, = self.server_socket.accept()
+                client, address = self.server_socket.accept()
                 print("Connection accepted")
                 while True:
                     data = client.recv(1024)
                     if data:
-                        print(data)
                         print("Making lock")
                         lock = Lock.Lock(data)
                         print("Checking lock")

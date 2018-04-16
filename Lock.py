@@ -17,7 +17,6 @@ class Lock(object):
         '''
         Constructor
         '''
-        print(key)
         self.real_key = bytearray()
         self.real_key.append(key[0])
         self.real_key.append(key[1])
