@@ -24,6 +24,7 @@ class BluetoothServer(object):
         Run Server method - this starts the server
         '''
         print("bluetooth RFCOMM server is listening")
+        last_seed = 0
         while True:
             client = None
             try:
@@ -33,7 +34,8 @@ class BluetoothServer(object):
                     data = client.recv(1024)
                     if data:
                         print("Making lock")
-                        lock = Lock.Lock(data)
+                        lock = Lock.Lock(data, last_seed)
+                        last_seed = lock.get_last_seed()
                         print("Checking lock")
                         if lock.is_locked():
                             print("Data is not of the expected pattern")

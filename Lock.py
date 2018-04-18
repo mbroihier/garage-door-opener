@@ -13,7 +13,7 @@ class Lock(object):
     OFFSET = 45289
 
 
-    def __init__(self, key):
+    def __init__(self, key, last_seed):
         '''
         Constructor
         '''
@@ -27,16 +27,21 @@ class Lock(object):
                    ((key[2] << 8) & 0xff00) + (key[3] & 0xff))
         #important to limit initial seed
         seed = seed % self.MODULO
-        index = 4
-        seed = (self.SLOPE * seed + self.OFFSET) % self.MODULO
-        size = seed % 7 + 5
-        while index < size:
-            test_byte = seed & 0xff
-            self.real_key.append(test_byte)
-            if test_byte != key[index]:
-                self.locked = True
+        if seed > last_seed and last_seed != 0:
+            self.last_seed = seed
+            index = 4
             seed = (self.SLOPE * seed + self.OFFSET) % self.MODULO
-            index = index + 1
+            size = seed % 7 + 5
+            while index < size:
+                test_byte = seed & 0xff
+                self.real_key.append(test_byte)
+                if test_byte != key[index]:
+                    self.locked = True
+                seed = (self.SLOPE * seed + self.OFFSET) % self.MODULO
+                index = index + 1
+        else:
+            self.locked = True
+            self.last_seed = seed
 
     def is_locked(self):
         '''
@@ -49,3 +54,9 @@ class Lock(object):
         Returns what the key should be given the initial seed
         '''
         return self.real_key
+
+    def get_last_seed(self):
+        '''
+        Returns the seed that was used to generate the key
+        '''
+        return self.last_seed
