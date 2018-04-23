@@ -29,10 +29,10 @@ class Lock(object):
         seed = seed % self.MODULO
         if seed > last_seed and last_seed != 0:
             self.last_seed = seed
+            size = seed % 7 + 5
             index = 4
             seed = (self.SLOPE * seed + self.OFFSET) % self.MODULO
-            size = seed % 7 + 5
-            while index < size:
+            while index < size and size == len(key):
                 test_byte = seed & 0xff
                 self.real_key.append(test_byte)
                 if test_byte != key[index]:
