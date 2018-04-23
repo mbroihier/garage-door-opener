@@ -5,12 +5,14 @@ Created on Apr 16, 2018
 '''
 import bluetooth
 import Lock
+import Switch
 
 class BluetoothServer(object):
     '''
     Bluetooth server class
     '''
     def __init__(self):
+        self.switch = Switch.Switch(2)
         self.server_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
         self.server_socket.bind(("", bluetooth.PORT_ANY))
         self.server_socket.listen(1)
@@ -42,6 +44,7 @@ class BluetoothServer(object):
                             client.send("Authentication Failed")
                         else:
                             print("Data pattern is acceptable")
+                            self.switch.press()
                             client.send("Command Successful")
 
             except KeyboardInterrupt:
