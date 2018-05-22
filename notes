@@ -4,6 +4,6 @@ got bluetooth server basic code from blog.kevindoran.co/bluetooth-programming-wi
 sudo vi /etc/systemd/system/bluetooth.target.wants/bluetooth.service - added --noplugin=sap -C
 sudo systemctl restart bluetooth.service
 sudo sdptool add SP
-
+sudo apt-get install git
 
 info: blog.davidvassallo.me
