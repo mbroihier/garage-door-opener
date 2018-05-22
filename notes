@@ -1,6 +1,9 @@
 sudo apt-get install python-bluetooth
 sudo pip3 install PyBluez
 got bluetooth server basic code from blog.kevindoran.co/bluetooth-programming-with-python3
-vi /etc/systemd/system/bluetooth.target.wants/bluetooth.service - added --noplugin=sap -C
-sudo sysctl restart bluetooth.service
+sudo vi /etc/systemd/system/bluetooth.target.wants/bluetooth.service - added --noplugin=sap -C
+sudo systemctl restart bluetooth.service
 sudo sdptool add SP
+
+
+info: blog.davidvassallo.me
