@@ -1,5 +1,6 @@
 sudo apt-get install python-bluetooth
 sudo pip3 install PyBluez
+sudo pip3 install RPi.GPIO
 got bluetooth server basic code from blog.kevindoran.co/bluetooth-programming-with-python3
 sudo vi /etc/systemd/system/bluetooth.target.wants/bluetooth.service - added --noplugin=sap -C
 sudo systemctl restart bluetooth.service
