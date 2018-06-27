@@ -27,6 +27,7 @@ class BluetoothServer(object):
         '''
         print("bluetooth RFCOMM server is listening")
         last_seed = 0
+        lock = None
         while True:
             client = None
             try:
@@ -35,10 +36,12 @@ class BluetoothServer(object):
                 while True:
                     data = client.recv(1024)
                     if data:
-                        print("Making lock")
-                        lock = Lock.Lock(data, last_seed)
-                        last_seed = lock.get_last_seed()
-                        print("Checking lock")
+                        if lock is None:
+                            print("Making a lock - this should fail to authenticate")
+                            lock = Lock.Lock(data, last_seed)
+                        else:
+                            print("Checking a new incoming key")
+                            lock.check_another_key(data)
                         if lock.is_locked():
                             print("Data is not of the expected pattern")
                             client.send("Authentication Failed")
