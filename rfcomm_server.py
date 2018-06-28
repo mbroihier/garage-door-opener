@@ -33,22 +33,22 @@ class BluetoothServer(object):
             try:
                 client, address = self.server_socket.accept()
                 print("Connection accepted")
-                while True:
-                    data = client.recv(1024)
-                    if data:
-                        if lock is None:
-                            print("Making a lock - this should fail to authenticate")
-                            lock = Lock.Lock(data, last_seed)
-                        else:
-                            print("Checking a new incoming key")
-                            lock.check_another_key(data)
-                        if lock.is_locked():
-                            print("Data is not of the expected pattern")
-                            client.send("Authentication Failed")
-                        else:
-                            print("Data pattern is acceptable")
-                            self.switch.press()
-                            client.send("Command Successful")
+                data = client.recv(1024)
+                if data:
+                    if lock is None:
+                        print("Making a lock - this should fail to authenticate")
+                        lock = Lock.Lock(data, last_seed)
+                    else:
+                        print("Checking a new incoming key")
+                        lock.check_another_key(data)
+                    if lock.is_locked():
+                        print("Data is not of the expected pattern")
+                        client.send("Authentication Failed")
+                    else:
+                        print("Data pattern is acceptable")
+                        self.switch.press()
+                        client.send("Command Successful")
+                client.close() # close the socket connection
 
             except KeyboardInterrupt:
                 print("Closing socket and exiting")

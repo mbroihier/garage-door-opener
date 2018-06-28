@@ -4,18 +4,18 @@ Created on Jun 16, 2018
 @author: broihier
 '''
 import sys
+import time
 import bluetooth
-import Lock
 
-def check_bytes(b1, b2):
+def check_bytes(ba1, ba2):
     '''
     Check byte arrays for equality
     '''
-    if len(b1) != len(b2):
+    if len(ba1) != len(ba2):
         return False
     index = 0
-    for b1_byte in b1:
-        if b1_byte != b2[index]:
+    for ba1_byte in ba1:
+        if ba1_byte != ba2[index]:
             return False
         else:
             index = index + 1
@@ -35,40 +35,52 @@ class BluetoothClient(object):
             print("no service found")
             sys.exit(0)
         for match in service_matches:
-            host = match["host"]
-            print(host)
-            port = match["port"]
-            print(port)
+            self.host = match["host"]
+            print(self.host)
+            self.port = match["port"]
+            print(self.port)
             name = match["name"]
             print(name)
-        self.server_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-        self.server_socket.connect((host, port))
-        self.test_data = bytearray()
 
     def run_client(self, message):
         '''
         Run Client method - send packet and receive reply
         '''
+        server_socket = None
+        while True:
+            try:
+                server_socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+                server_socket.connect((self.host, self.port))
+                break
+            except bluetooth.btcommon.BluetoothError:
+                server_socket.close()
+                time.sleep(2)
+
         print("sending packet to GDO controller")
-        self.server_socket.send(bytes(message))
-        reply = self.server_socket.recv(1024)
+        try:
+            server_socket.send(bytes(message))
+            reply = server_socket.recv(1024)
+            server_socket.close()
+        except Exception as err:
+            print("Error talking to server: " + err)
         return reply
 
     def gdo_driver(self, control_path):
-        fileObject = open(control_path, "r")
-        line = fileObject.readline()
+        '''
+        GDO Controller driver
+        '''
+        file_object = open(control_path, "r")
+        line = file_object.readline()
         if line != "":
             test_category_name = line.strip()
         else:
             print("file open error: " + control_path)
-            self.close_client()
             exit(-1)
         results = open(test_category_name + ".testDbResults", "w")
         expected_results = open(test_category_name + ".testDbExpectedResults", "r")
-        line = fileObject.readline()
-        passed_string = bytes("Command Successful", "utf-8")
+        line = file_object.readline()
         while line != "":
-            string_bytes = fileObject.readline().rstrip().split(" ")
+            string_bytes = file_object.readline().rstrip().split(" ")
             message_bytes = bytearray()
             for string_byte in string_bytes:
                 message_bytes.append(bytes.fromhex(string_byte)[0])
@@ -86,14 +98,10 @@ class BluetoothClient(object):
                 print("Received: " + reply.decode("utf-8"))
                 results.write(line)
                 results.write("FAILED\n")
-            line = fileObject.readline()
+            line = file_object.readline()
 
         results.close()
         expected_results.close()
-        self.server_socket.close()
-
-    def close_client(self):
-        self.server_socket.close()
 
 if __name__ == "__main__":
     CLIENT = BluetoothClient()
