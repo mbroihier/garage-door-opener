@@ -142,13 +142,13 @@ class GDOEmulator(object):
             expected_results.write(test_case_id)
             expected_results.write(line)
             results.write(test_case_id)
-            results.write("UNTESTED")
+            results.write("UNTESTED\n")
             pre.write(test_case_id)
-            pre.write(data.strip())
+            pre.write(data.strip() + "\n")
             post.write(test_case_id)
             post.write("\n")
             procedures.write(test_case_id)
-            procedures.write("This test case will be executed using the GDO driver via the " + test_category_title + ".driver file.  The byte stream shown in the setup section will be sent by the driver and should produce the expected results shown in the expected results section")
+            procedures.write("/step This test case will be executed using the GDO driver via the " + test_category_title + ".driver file.  The byte stream shown in the setup section will be sent by the driver and should produce the expected results shown in the expected results section.\step\n")
 
 
             line = file_object.readline() # read next test case title
