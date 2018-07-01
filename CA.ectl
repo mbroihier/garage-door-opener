@@ -1,0 +1,47 @@
+CA
+Controller Authentication
+This test category verifies requirements associated with the authentification of the byte stream received by the controller from the "user interface".
+A valid byte pattern
+GDO-PR-CONTROLLER-020,GDO-PR-CONTROLLER-020.004: During this test case, a valid byte sequence will be sent.  Authentication will fail because this is the first contact with the controller that has not yet built a lock.
+valid: 55 56 57 58
+Authentication Failed
+A second valid byte pattern
+GDO-PR-CONTROLLER-020, GDO-PR-CONTROLLER-020.004: During this test case, a valid byte sequence will be sent.  Authentication will be successful.
+valid: 55 56 57 59
+Command Successful
+A third valid byte pattern, but it will have an extra byte
+GDO-PR-CONTROLLER-020, GDO-PR-CONTROLLER-020.003: During this test case, a valid byte sequence will be sent but then there will be an extra random byte.  Authentication will fail.
+valid but extra: 55 56 57 5a
+Authentication Failed
+A fourth valid byte pattern, but it will have a missing byte from the end
+GDO-PR-CONTROLLER-020, GDO-PR-CONTROLLER-020.004: During this test case, a valid byte sequence will be sent but then there will be a missing byte.  Authentication will fail.
+valid but short: 55 56 57 5b
+Authentication Failed
+A random byte pattern
+GDO-PR-CONTROLLER-020, GDO-PR-CONTROLLER-020.003: During this test case, a random byte sequence will be sent.  Authentication will fail.
+random: 
+Authentication Failed
+A valid byte pattern after a large buffer overflow random set of bytes
+GDO-PR-CONTROLLER-020, GDO-PR-CONTROLLER-020.004: During this test case, a valid byte sequence will be sent.  Authentication will be successful.
+valid: 55 56 57 5c
+Command Successful
+Free form Bytes Test - too few - one byte
+GDO-PR-CONTROLLER-020, GDO-PR-CONTROLLER-020.004: During this test case, only one byte will be sent and this is too short for authenticating.  Authentication should fail.
+free form: 55
+Authentication Failed
+Free form Bytes Test - too few - two bytes
+GDO-PR-CONTROLLER-020, GDO-PR-CONTROLLER-020.004: During this test case, only two bytes will be sent and this is too short for authenticating.  Authentication should fail.
+free form: 55 56
+Authentication Failed
+Free form Bytes Test - too few - three bytes
+GDO-PR-CONTROLLER-020, GDO-PR-CONTROLLER-020.004: During this test case, only three bytes will be sent and this is too short for authenticating.  Authentication should fail.
+free form: 55 56 57
+Authentication Failed
+Free form Bytes Test - too few - four bytes
+GDO-PR-CONTROLLER-020, GDO-PR-CONTROLLER-020.004: During this test case, only four bytes will be sent and this is too short for authenticating.  Authentication should fail.
+free form: 55 56 57 58
+Authentication Failed
+Free form Bytes Test - five bytes, bad pattern
+GDO-PR-CONTROLLER-020, GDO-PR-CONTROLLER-020.004: During this test case, five bytes will be sent that will not be the proper pattern.  Authentication should fail.
+free form: 55 56 57 58 5a
+Authentication Failed
