@@ -1,0 +1,4 @@
+#!/bin/bash
+/home/pi/garage-door-opener/prepGDO
+/bin/sleep 15
+sudo /usr/bin/python3 /home/pi/garage-door-opener/gdo_controller_server.py

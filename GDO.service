@@ -1,0 +1,15 @@
+[Unit]
+Description=GDO service
+After=bluetooth.target
+
+[Service]
+User=pi
+Group=pi
+#ExecStart=/usr/bin/sudo /usr/bin/python3 /home/pi/garage-door-opener/rfcomm_server.py
+ExecStart=/home/pi/garage-door-opener/GDOWrapper
+Restart=always
+RestartSec=10
+
+[Install]
+Alias=GDO.service
+WantedBy=default.target
