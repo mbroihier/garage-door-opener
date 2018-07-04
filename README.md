@@ -34,7 +34,9 @@ Assembly - Software:
  15)  sudo cp -p GDO.service /lib/systemd/system/ 
  16)  sudo systemctl enable GDO
  17)  Pair your bluetooth client with this server
-      - sudo bluetoothctl (you'll need to start the agent, allow discovery, and then initiate a pairing operation from the client)
+      - sudo bluetoothctl (you'll need to start the agent, allow discovery, then initiate a pairing operation from the client, disable the agent, and disable discovery)
+
+
 Once paired, reboot:
 ```
 sudo shutdown -r now
